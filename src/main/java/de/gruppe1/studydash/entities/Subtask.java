@@ -2,25 +2,19 @@ package de.gruppe1.studydash.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 @Entity
-public class ToDo {
+public class Subtask {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String description;
     private boolean completed;
 
-    @OneToMany(mappedBy = "parentToDo", cascade = CascadeType.ALL)
-    private List<Subtask> subTasks = new ArrayList<>();
-
-
-    public ToDo() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "todo_id")
+    private ToDo parentToDo;
 
     public Long getId() {
         return id;
@@ -44,5 +38,13 @@ public class ToDo {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public ToDo getParentToDo() {
+        return parentToDo;
+    }
+
+    public void setParentToDo(ToDo parentToDo) {
+        this.parentToDo = parentToDo;
     }
 }

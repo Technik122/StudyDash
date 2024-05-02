@@ -1,43 +1,65 @@
 package de.gruppe1.studydash.controllers;
 
 import de.gruppe1.studydash.entities.ToDo;
-import de.gruppe1.studydash.repositories.ToDoRepository;
+import de.gruppe1.studydash.services.ToDoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
-import org.springframework.expression.ExpressionException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:49384")
 @RequestMapping("/todos")
 public class ToDoController {
 
     @Autowired
-    private ToDoRepository toDoRepository;
+    private ToDoService toDoService;
 
-    @GetMapping
-    public List<ToDo> getAllToDos() {
-        return toDoRepository.findAll();
-    }
+  @RequestMapping("/resource")
+  public Map<String, Object> home() {
+    Map<String, Object> model = new HashMap<String, Object>();
+    model.put("id", UUID.randomUUID().toString());
+    model.put("content", "Hello World");
+    return model;
+  }
 
     @PostMapping
-    public ToDo createToDo(@RequestBody ToDo toDo) {
-        return toDoRepository.save(toDo);
+    public ResponseEntity<ToDo> createToDo(@RequestBody ToDo toDo) {
+        ToDo createdToDo = toDoService.createToDo(toDo);
+        return new ResponseEntity<>(createdToDo, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ToDo> getToDoById(@PathVariable Long id) {
+        ToDo toDo = toDoService.getToDoById(id);
+        if (toDo != null) {
+            return new ResponseEntity<>(toDo, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/{id}")
-    public ToDo updateToDo(@PathVariable Long id, @RequestBody ToDo toDo) {
-        ToDo existingToDo = toDoRepository.findById(id).orElseThrow();
-        existingToDo.setTitle(toDo.getTitle());
-        existingToDo.setDescription(toDo.getDescription());
-        existingToDo.setCompleted(toDo.isCompleted());
-        return toDoRepository.save(existingToDo);
+    public ResponseEntity<ToDo> updateToDo(@PathVariable Long id, @RequestBody ToDo toDo) {
+        ToDo updatedToDo = toDoService.updateToDo(id, toDo);
+        if (updatedToDo != null) {
+            return new ResponseEntity<>(updatedToDo, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void deleteToDo(@PathVariable Long id) {
-        toDoRepository.deleteById(id);
+    public ResponseEntity<Void> deleteToDo(@PathVariable Long id) {
+        boolean deleted = toDoService.deleteToDo(id);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
