@@ -76,4 +76,13 @@ public class UserAuthProvider {
         return new UsernamePasswordAuthenticationToken(userMapper.toUserDto(user), null, Collections.emptyList());
     }
 
+    public boolean isTokenValid(String token) {
+        try {
+            validateToken(token);
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
 }

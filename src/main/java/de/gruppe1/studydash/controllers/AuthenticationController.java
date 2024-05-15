@@ -22,10 +22,6 @@ public class AuthenticationController implements WebMvcConfigurer {
     private final UserService userService;
     private final UserAuthProvider userAuthProvider;
 
-    @GetMapping("/messages")
-    public ResponseEntity<List<String>> messages() {
-        return ResponseEntity.ok(Arrays.asList("ToDo1", "ToDo2", "ToDo3"));
-    }
 
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody CredentialsDto credentialsDto) {
@@ -39,5 +35,16 @@ public class AuthenticationController implements WebMvcConfigurer {
         UserDto user = userService.register(signUpDto);
         user.setToken(userAuthProvider.createToken(user));
         return ResponseEntity.created(URI.create("/users" + user.getId())).body(user);
+    }
+
+    @GetMapping("/validate-token")
+    public ResponseEntity<Boolean> validateToken(@RequestHeader(value = "Authorization") String header) {
+        String[] authElements = header.split(" ");
+        if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
+            boolean isValid = userAuthProvider.isTokenValid(authElements[1]);
+            return ResponseEntity.ok(isValid);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

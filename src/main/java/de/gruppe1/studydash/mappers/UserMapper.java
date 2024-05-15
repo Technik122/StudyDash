@@ -6,6 +6,8 @@ import de.gruppe1.studydash.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+
+// Mapper zur Konvertierung von versch. Objekttypen
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
