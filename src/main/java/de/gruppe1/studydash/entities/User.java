@@ -1,10 +1,13 @@
 package de.gruppe1.studydash.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,4 +26,5 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
 }

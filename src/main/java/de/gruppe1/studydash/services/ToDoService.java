@@ -1,15 +1,23 @@
 package de.gruppe1.studydash.services;
 
 import de.gruppe1.studydash.entities.ToDo;
+import de.gruppe1.studydash.entities.User;
+import de.gruppe1.studydash.exceptions.AppException;
 import de.gruppe1.studydash.repositories.ToDoRepository;
+import de.gruppe1.studydash.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
+@RequiredArgsConstructor
 public class ToDoService {
 
-    @Autowired
-    private ToDoRepository toDoRepository;
+    private final ToDoRepository toDoRepository;
+    private final UserRepository userRepository;
 
     public ToDo createToDo(ToDo toDo) {
         return toDoRepository.save(toDo);
@@ -38,5 +46,12 @@ public class ToDoService {
         } else {
             return false;
         }
+    }
+
+    public List<ToDo> getToDosByUserId(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new AppException("User not found", HttpStatus.NOT_FOUND
+        ));
+        return toDoRepository.findByUser(user);
     }
 }

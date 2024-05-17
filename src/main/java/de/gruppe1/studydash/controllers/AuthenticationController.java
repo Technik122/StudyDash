@@ -12,8 +12,6 @@ import de.gruppe1.studydash.dtos.UserDto;
 import de.gruppe1.studydash.dtos.CredentialsDto;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

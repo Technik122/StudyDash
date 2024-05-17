@@ -56,7 +56,12 @@ public class UserAuthProvider {
 
         DecodedJWT decoded = verifier.verify(token);
 
+        User userEntity = userRepository.findByUsername(decoded.getIssuer())
+                .orElseThrow(() -> new AppException("Unknown User", HttpStatus.NOT_FOUND));
+
+
         UserDto user = UserDto.builder()
+                .id(userEntity.getId())
                 .username(decoded.getIssuer())
                 .build();
 
