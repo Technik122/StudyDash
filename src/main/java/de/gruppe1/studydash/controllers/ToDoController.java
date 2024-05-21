@@ -3,6 +3,8 @@ package de.gruppe1.studydash.controllers;
 import de.gruppe1.studydash.configurations.UserAuthProvider;
 import de.gruppe1.studydash.dtos.UserDto;
 import de.gruppe1.studydash.entities.ToDo;
+import de.gruppe1.studydash.entities.User;
+import de.gruppe1.studydash.mappers.UserMapper;
 import de.gruppe1.studydash.services.ToDoService;
 import de.gruppe1.studydash.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,9 @@ public class ToDoController {
     private final ToDoService toDoService;
     private final UserAuthProvider userAuthProvider;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @GetMapping("/user")
     public ResponseEntity<List<ToDo>> getToDosByUser(@RequestHeader(value = "Authorization") String header) {
         String[] authElements = header.split(" ");
@@ -38,27 +43,18 @@ public class ToDoController {
         }
     }
 
-  @RequestMapping("/resource")
-  public Map<String, Object> home() {
-    Map<String, Object> model = new HashMap<String, Object>();
-    model.put("id", UUID.randomUUID().toString());
-    model.put("content", "Hello World");
-    return model;
-  }
-
-    @PostMapping
-    public ResponseEntity<ToDo> createToDo(@RequestBody ToDo toDo) {
-        ToDo createdToDo = toDoService.createToDo(toDo);
-        return new ResponseEntity<>(createdToDo, HttpStatus.CREATED);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ToDo> getToDoById(@PathVariable Long id) {
-        ToDo toDo = toDoService.getToDoById(id);
-        if (toDo != null) {
-            return new ResponseEntity<>(toDo, HttpStatus.OK);
+    @PostMapping("/add")
+    public ResponseEntity<ToDo> createToDo(@RequestBody ToDo toDo, @RequestHeader(value = "Authorization") String header) {
+        String[] authElements = header.split(" ");
+        if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
+            Authentication auth = userAuthProvider.validateToken(authElements[1]);
+            UserDto userDto = (UserDto) auth.getPrincipal();
+            User user = userMapper.dtoToUser(userDto);
+            toDo.setUser(user);
+            ToDo createdToDo = toDoService.createToDo(toDo);
+            return new ResponseEntity<>(createdToDo, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.badRequest().build();
         }
     }
 

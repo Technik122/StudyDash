@@ -15,4 +15,6 @@ public interface UserMapper {
 
     @Mapping(target = "password", ignore = true)
     User signUpToUser(SignUpDto signUpDto);
+
+    User dtoToUser(UserDto userDto);
 }
