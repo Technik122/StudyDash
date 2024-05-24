@@ -58,21 +58,21 @@ public class ToDoController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ToDo> updateToDo(@PathVariable Long id, @RequestBody ToDo toDo) {
-        ToDo updatedToDo = toDoService.updateToDo(id, toDo);
-        if (updatedToDo != null) {
-            return new ResponseEntity<>(updatedToDo, HttpStatus.OK);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Boolean> deleteToDoById(@PathVariable Long id) {
+        boolean deleted = toDoService.deleteToDoById(id);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteToDo(@PathVariable Long id) {
-        boolean deleted = toDoService.deleteToDo(id);
-        if (deleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PutMapping("/{id}")
+    public ResponseEntity<ToDo> updateToDo(@PathVariable Long id, @RequestBody ToDo toDo) {
+        ToDo updatedToDo = toDoService.updateToDo(id, toDo);
+        if (updatedToDo != null) {
+            return new ResponseEntity<>(updatedToDo, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

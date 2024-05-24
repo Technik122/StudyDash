@@ -38,7 +38,7 @@ public class ToDoService {
         }
     }
 
-    public boolean deleteToDo(Long id) {
+    public boolean deleteToDoById(Long id) {
         ToDo existingToDo = toDoRepository.findById(id).orElse(null);
         if (existingToDo != null) {
             toDoRepository.delete(existingToDo);
