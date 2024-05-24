@@ -33,8 +33,6 @@ public class ToDo {
     @JsonManagedReference
     private List<Subtask> subTasks = new ArrayList<>();
 
-
     public ToDo() {
     }
-
 }

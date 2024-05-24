@@ -23,14 +23,12 @@ public class ToDoService {
         return toDoRepository.save(toDo);
     }
 
-    public ToDo getToDoById(Long id) {
-        return toDoRepository.findById(id).orElse(null);
-    }
-
     public ToDo updateToDo(Long id, ToDo toDo) {
         ToDo existingToDo = toDoRepository.findById(id).orElse(null);
         if (existingToDo != null) {
             existingToDo.setDescription(toDo.getDescription());
+            existingToDo.setDeadLine(toDo.getDeadLine());
+            existingToDo.setPriority(toDo.getPriority());
             existingToDo.setCompleted(toDo.isCompleted());
             return toDoRepository.save(existingToDo);
         } else {
