@@ -23,4 +23,7 @@ public class Subtask {
     @JsonBackReference
     private ToDo parentToDo;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

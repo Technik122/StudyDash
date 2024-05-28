@@ -6,7 +6,6 @@ import de.gruppe1.studydash.exceptions.AppException;
 import de.gruppe1.studydash.repositories.ToDoRepository;
 import de.gruppe1.studydash.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +50,9 @@ public class ToDoService {
                 new AppException("User not found", HttpStatus.NOT_FOUND
         ));
         return toDoRepository.findByUser(user);
+    }
+
+    public ToDo getToDoById(Long id) {
+        return toDoRepository.findById(id).orElse(null);
     }
 }

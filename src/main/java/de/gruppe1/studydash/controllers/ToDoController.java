@@ -2,18 +2,19 @@ package de.gruppe1.studydash.controllers;
 
 import de.gruppe1.studydash.configurations.UserAuthProvider;
 import de.gruppe1.studydash.dtos.UserDto;
+import de.gruppe1.studydash.entities.Subtask;
 import de.gruppe1.studydash.entities.ToDo;
 import de.gruppe1.studydash.entities.User;
 import de.gruppe1.studydash.mappers.UserMapper;
+import de.gruppe1.studydash.services.SubtaskService;
 import de.gruppe1.studydash.services.ToDoService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,10 +22,9 @@ import java.util.*;
 public class ToDoController {
 
     private final ToDoService toDoService;
+    private final SubtaskService subtaskService;
     private final UserAuthProvider userAuthProvider;
-
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
 
     @GetMapping("/user")
     public ResponseEntity<List<ToDo>> getToDosByUser(@RequestHeader(value = "Authorization") String header) {
@@ -55,22 +55,89 @@ public class ToDoController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteToDoById(@PathVariable Long id) {
-        boolean deleted = toDoService.deleteToDoById(id);
-        if (deleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Boolean> deleteToDoById(@PathVariable Long id, @RequestHeader(value = "Authorization") String header) {
+        String[] authElements = header.split(" ");
+        if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
+            Authentication auth = userAuthProvider.validateToken(authElements[1]);
+            UserDto userDto = (UserDto) auth.getPrincipal();
+            ToDo toDo = toDoService.getToDoById(id);
+            if (toDo != null && toDo.getUser().getId().equals(userDto.getId())) {
+                boolean deleted = toDoService.deleteToDoById(id);
+                if (deleted) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ToDo> updateToDo(@PathVariable Long id, @RequestBody ToDo toDo) {
-        ToDo updatedToDo = toDoService.updateToDo(id, toDo);
-        if (updatedToDo != null) {
-            return new ResponseEntity<>(updatedToDo, HttpStatus.OK);
+    public ResponseEntity<ToDo> updateToDo(@PathVariable Long id, @RequestBody ToDo toDo, @RequestHeader(value = "Authorization") String header) {
+        String[] authElements = header.split(" ");
+        if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
+            Authentication auth = userAuthProvider.validateToken(authElements[1]);
+            UserDto userDto = (UserDto) auth.getPrincipal();
+            ToDo existingToDo = toDoService.getToDoById(id);
+            if (existingToDo != null && existingToDo.getUser().getId().equals(userDto.getId())) {
+                ToDo updatedToDo = toDoService.updateToDo(id, toDo);
+                if (updatedToDo != null) {
+                    return new ResponseEntity<>(updatedToDo, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/{id}/subtasks/get")
+    public ResponseEntity<List<Subtask>> getSubtasksByToDo(@PathVariable Long id, @RequestHeader(value = "Authorization") String header) {
+        String[] authElements = header.split(" ");
+        if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
+            Authentication auth = userAuthProvider.validateToken(authElements[1]);
+            UserDto userDto = (UserDto) auth.getPrincipal();
+            ToDo toDo = toDoService.getToDoById(id);
+            if (toDo != null && toDo.getUser().getId().equals(userDto.getId())) {
+                List<Subtask> subtasks = toDo.getSubTasks();
+                if (subtasks != null) {
+                    return new ResponseEntity<>(subtasks, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/{id}/subtasks/add")
+    public ResponseEntity<Subtask> createSubtask(@PathVariable Long id, @RequestBody Subtask subtask, @RequestHeader(value = "Authorization") String header) {
+        String[] authElements = header.split(" ");
+        if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
+            Authentication auth = userAuthProvider.validateToken(authElements[1]);
+            UserDto userDto = (UserDto) auth.getPrincipal();
+            ToDo toDo = toDoService.getToDoById(id);
+            if (toDo != null && toDo.getUser().getId().equals(userDto.getId())) {
+                User user = userMapper.dtoToUser(userDto);
+                subtask.setUser(user);
+                subtask.setParentToDo(toDo);
+                Subtask createdSubtask = subtaskService.createSubtask(subtask);
+                return new ResponseEntity<>(createdSubtask, HttpStatus.CREATED);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.badRequest().build();
         }
     }
 }
