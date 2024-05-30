@@ -1,14 +1,15 @@
 package de.gruppe1.studydash.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 
 @Setter
@@ -18,8 +19,12 @@ import java.util.List;
 public class ToDo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            type = org.hibernate.id.uuid.UuidGenerator.class
+    )
+    private UUID id;
     private String description;
     private boolean completed;
     private Date deadLine;

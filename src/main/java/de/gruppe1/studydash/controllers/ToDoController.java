@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,15 +55,15 @@ public class ToDoController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteToDoById(@PathVariable Long id, @RequestHeader(value = "Authorization") String header) {
+    @DeleteMapping("/delete/{uuid}")
+    public ResponseEntity<Boolean> deleteToDoById(@PathVariable UUID uuid, @RequestHeader(value = "Authorization") String header) {
         String[] authElements = header.split(" ");
         if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
             Authentication auth = userAuthProvider.validateToken(authElements[1]);
             UserDto userDto = (UserDto) auth.getPrincipal();
-            ToDo toDo = toDoService.getToDoById(id);
+            ToDo toDo = toDoService.getToDoById(uuid);
             if (toDo != null && toDo.getUser().getId().equals(userDto.getId())) {
-                boolean deleted = toDoService.deleteToDoById(id);
+                boolean deleted = toDoService.deleteToDoById(uuid);
                 if (deleted) {
                     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
                 } else {
@@ -76,15 +77,15 @@ public class ToDoController {
         }
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ToDo> updateToDo(@PathVariable Long id, @RequestBody ToDo toDo, @RequestHeader(value = "Authorization") String header) {
+    @PutMapping("/update/{uuid}")
+    public ResponseEntity<ToDo> updateToDo(@PathVariable UUID uuid, @RequestBody ToDo toDo, @RequestHeader(value = "Authorization") String header) {
         String[] authElements = header.split(" ");
         if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
             Authentication auth = userAuthProvider.validateToken(authElements[1]);
             UserDto userDto = (UserDto) auth.getPrincipal();
-            ToDo existingToDo = toDoService.getToDoById(id);
+            ToDo existingToDo = toDoService.getToDoById(uuid);
             if (existingToDo != null && existingToDo.getUser().getId().equals(userDto.getId())) {
-                ToDo updatedToDo = toDoService.updateToDo(id, toDo);
+                ToDo updatedToDo = toDoService.updateToDo(uuid, toDo);
                 if (updatedToDo != null) {
                     return new ResponseEntity<>(updatedToDo, HttpStatus.OK);
                 } else {
@@ -98,13 +99,13 @@ public class ToDoController {
         }
     }
 
-    @GetMapping("/{id}/subtasks/get")
-    public ResponseEntity<List<Subtask>> getSubtasksByToDo(@PathVariable Long id, @RequestHeader(value = "Authorization") String header) {
+    @GetMapping("/{uuid}/subtasks/get")
+    public ResponseEntity<List<Subtask>> getSubtasksByToDo(@PathVariable UUID uuid, @RequestHeader(value = "Authorization") String header) {
         String[] authElements = header.split(" ");
         if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
             Authentication auth = userAuthProvider.validateToken(authElements[1]);
             UserDto userDto = (UserDto) auth.getPrincipal();
-            ToDo toDo = toDoService.getToDoById(id);
+            ToDo toDo = toDoService.getToDoById(uuid);
             if (toDo != null && toDo.getUser().getId().equals(userDto.getId())) {
                 List<Subtask> subtasks = toDo.getSubTasks();
                 if (subtasks != null) {
@@ -120,13 +121,13 @@ public class ToDoController {
         }
     }
 
-    @PostMapping("/{id}/subtasks/add")
-    public ResponseEntity<Subtask> createSubtask(@PathVariable Long id, @RequestBody Subtask subtask, @RequestHeader(value = "Authorization") String header) {
+    @PostMapping("/{uuid}/subtasks/add")
+    public ResponseEntity<Subtask> createSubtask(@PathVariable UUID uuid, @RequestBody Subtask subtask, @RequestHeader(value = "Authorization") String header) {
         String[] authElements = header.split(" ");
         if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
             Authentication auth = userAuthProvider.validateToken(authElements[1]);
             UserDto userDto = (UserDto) auth.getPrincipal();
-            ToDo toDo = toDoService.getToDoById(id);
+            ToDo toDo = toDoService.getToDoById(uuid);
             if (toDo != null && toDo.getUser().getId().equals(userDto.getId())) {
                 User user = userMapper.dtoToUser(userDto);
                 subtask.setUser(user);

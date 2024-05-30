@@ -18,6 +18,9 @@ public class Subtask {
     private String description;
     private boolean completed;
 
+    @Transient
+    private String encryptedId;
+
     @ManyToOne
     @JoinColumn(name = "todo_id")
     @JsonBackReference
