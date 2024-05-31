@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,12 +19,10 @@ import java.util.UUID;
 public class ToDo {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            type = org.hibernate.id.uuid.UuidGenerator.class
-    )
+    @UuidGenerator
     private UUID id;
+
+
     private String description;
     private boolean completed;
     private Date deadLine;
@@ -37,7 +35,4 @@ public class ToDo {
     @OneToMany(mappedBy = "parentToDo", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Subtask> subTasks = new ArrayList<>();
-
-    public ToDo() {
-    }
 }
