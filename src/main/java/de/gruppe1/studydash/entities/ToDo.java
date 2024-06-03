@@ -22,7 +22,6 @@ public class ToDo {
     @UuidGenerator
     private UUID id;
 
-
     private String description;
     private boolean completed;
     private Date deadLine;
@@ -34,5 +33,5 @@ public class ToDo {
 
     @OneToMany(mappedBy = "parentToDo", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Subtask> subTasks = new ArrayList<>();
+    private List<Subtask> subtasks = new ArrayList<>();
 }

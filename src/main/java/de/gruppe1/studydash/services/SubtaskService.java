@@ -1,34 +1,41 @@
 package de.gruppe1.studydash.services;
 
+import de.gruppe1.studydash.dtos.SubtaskDto;
 import de.gruppe1.studydash.entities.Subtask;
+import de.gruppe1.studydash.mappers.SubtaskMapper;
 import de.gruppe1.studydash.repositories.SubtaskRepository;
-import de.gruppe1.studydash.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class SubtaskService {
 
     private final SubtaskRepository subtaskRepository;
-    private final UserRepository userRepository;
+    private final SubtaskMapper subtaskMapper;
 
-    public Subtask createSubtask(Subtask subtask) {
-        return subtaskRepository.save(subtask);
+    public SubtaskDto createSubtask(SubtaskDto subtaskDto) {
+        Subtask subtask = subtaskMapper.dtoToSubtask(subtaskDto);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
+        return subtaskMapper.toSubtaskDto(savedSubtask);
     }
 
-    public Subtask updateSubtask(Long id, Subtask subtask) {
+    public SubtaskDto updateSubtask(UUID id, SubtaskDto subtaskDto) {
+        Subtask subtask = subtaskMapper.dtoToSubtask(subtaskDto);
         Subtask existingSubtask = subtaskRepository.findById(id).orElse(null);
         if (existingSubtask != null) {
             existingSubtask.setDescription(subtask.getDescription());
             existingSubtask.setCompleted(subtask.isCompleted());
-            return subtaskRepository.save(existingSubtask);
+            Subtask savedSubtask = subtaskRepository.save(existingSubtask);
+            return subtaskMapper.toSubtaskDto(savedSubtask);
         } else {
             return null;
         }
     }
 
-    public boolean deleteSubtaskById(Long id) {
+    public boolean deleteSubtaskById(UUID id) {
         Subtask existingSubtask = subtaskRepository.findById(id).orElse(null);
         if (existingSubtask != null) {
             subtaskRepository.delete(existingSubtask);
@@ -38,7 +45,12 @@ public class SubtaskService {
         }
     }
 
-    public Subtask getSubtaskById(Long id) {
-        return subtaskRepository.findById(id).orElse(null);
+    public SubtaskDto getSubtaskById(UUID id) {
+        Subtask subtask = subtaskRepository.findById(id).orElse(null);
+        if (subtask != null) {
+            return subtaskMapper.toSubtaskDto(subtask);
+        } else {
+            return null;
+        }
     }
 }

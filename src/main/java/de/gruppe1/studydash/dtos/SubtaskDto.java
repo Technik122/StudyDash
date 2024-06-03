@@ -11,8 +11,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
+public class SubtaskDto {
     private UUID id;
-    private String username;
-    private String token;
+    private String description;
+    private boolean completed;
+    private ToDoDto parentToDo;
+    private UserDto user;
 }

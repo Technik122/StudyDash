@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -12,14 +15,11 @@ import lombok.Setter;
 public class Subtask {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @UuidGenerator
+    private UUID id;
 
     private String description;
     private boolean completed;
-
-    @Transient
-    private String encryptedId;
 
     @ManyToOne
     @JoinColumn(name = "todo_id")
