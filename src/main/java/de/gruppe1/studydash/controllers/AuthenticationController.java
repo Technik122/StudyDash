@@ -45,4 +45,15 @@ public class AuthenticationController implements WebMvcConfigurer {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<String> refreshToken(@RequestHeader(value = "Authorization") String header) {
+        String[] authElements = header.split(" ");
+        if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
+            String newToken = userAuthProvider.refreshToken(authElements[1]);
+            return ResponseEntity.ok(newToken);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

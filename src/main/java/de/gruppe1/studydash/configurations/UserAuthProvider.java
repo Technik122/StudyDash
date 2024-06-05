@@ -3,6 +3,7 @@ package de.gruppe1.studydash.configurations;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import de.gruppe1.studydash.dtos.UserDto;
 import de.gruppe1.studydash.entities.User;
@@ -50,22 +51,26 @@ public class UserAuthProvider {
     }
 
     public Authentication validateToken(String token) {
-        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-        JWTVerifier verifier = JWT.require(algorithm).build();
+            JWTVerifier verifier = JWT.require(algorithm).build();
 
-        DecodedJWT decoded = verifier.verify(token);
+            DecodedJWT decoded = verifier.verify(token);
 
-        User userEntity = userRepository.findByUsername(decoded.getIssuer())
-                .orElseThrow(() -> new AppException("Unknown User", HttpStatus.NOT_FOUND));
+            User userEntity = userRepository.findByUsername(decoded.getIssuer())
+                    .orElseThrow(() -> new AppException("Unknown User", HttpStatus.NOT_FOUND));
 
 
-        UserDto user = UserDto.builder()
-                .id(userEntity.getId())
-                .username(decoded.getIssuer())
-                .build();
+            UserDto user = UserDto.builder()
+                    .id(userEntity.getId())
+                    .username(decoded.getIssuer())
+                    .build();
 
-        return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+            return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+        } catch (JWTVerificationException e) {
+            throw new AppException("Token expired or invalid", HttpStatus.UNAUTHORIZED);
+        }
     }
 
     public Authentication validateTokenStrongly(String token) {
@@ -90,4 +95,20 @@ public class UserAuthProvider {
         }
     }
 
+    public String refreshToken(String expiredToken) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            DecodedJWT decoded = verifier.verify(expiredToken);
+            if (decoded.getExpiresAt().before(new Date())) {
+                User userEntity = userRepository.findByUsername(decoded.getIssuer())
+                        .orElseThrow(() -> new AppException("Unknown User", HttpStatus.NOT_FOUND));
+                return createToken(userMapper.toUserDto(userEntity));
+            } else {
+                throw new AppException("Token is not expired", HttpStatus.BAD_REQUEST);
+            }
+        } catch (JWTVerificationException e) {
+            throw new AppException("Invalid token", HttpStatus.UNAUTHORIZED);
+        }
+    }
 }
