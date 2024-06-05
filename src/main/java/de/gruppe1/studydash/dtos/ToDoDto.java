@@ -4,7 +4,6 @@ import de.gruppe1.studydash.entities.Priority;
 import lombok.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -21,5 +20,6 @@ public class ToDoDto {
     private Date deadLine;
     private UserDto user;
     private Priority priority;
-    private List<SubtaskDto> subtasks;
+
+    //private List<SubtaskDto> subtasks;
 }

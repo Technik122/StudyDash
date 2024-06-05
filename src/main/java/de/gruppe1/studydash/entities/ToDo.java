@@ -1,14 +1,11 @@
 package de.gruppe1.studydash.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -31,7 +28,8 @@ public class ToDo {
     @JoinColumn(name = "user_id")
     private User user;
 
+    /*
     @OneToMany(mappedBy = "parentToDo", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Subtask> subtasks = new ArrayList<>();
+    private List<Subtask> subtasks = new ArrayList<>(); */
 }

@@ -15,6 +15,6 @@ public class SubtaskDto {
     private UUID id;
     private String description;
     private boolean completed;
-    private ToDoDto parentToDo;
+    private UUID parentToDo;
     private UserDto user;
 }

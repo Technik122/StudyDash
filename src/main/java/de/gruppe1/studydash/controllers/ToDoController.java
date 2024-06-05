@@ -103,7 +103,7 @@ public class ToDoController {
             UserDto userDto = (UserDto) auth.getPrincipal();
             ToDoDto toDo = toDoService.getToDoById(uuid);
             if (toDo != null && toDo.getUser().getId().equals(userDto.getId())) {
-                List<SubtaskDto> subtasks = toDo.getSubtasks();
+                List<SubtaskDto> subtasks = subtaskService.getSubtasksByParentToDoId(toDo.getId());
                 if (subtasks != null) {
                     return new ResponseEntity<>(subtasks, HttpStatus.OK);
                 } else {
@@ -126,8 +126,7 @@ public class ToDoController {
             ToDoDto toDo = toDoService.getToDoById(uuid);
             if (toDo != null && toDo.getUser().getId().equals(userDto.getId())) {
                 subtask.setUser(userDto);
-                subtask.setParentToDo(toDo);
-                SubtaskDto createdSubtask = subtaskService.createSubtask(subtask);
+                SubtaskDto createdSubtask = subtaskService.createSubtask(toDo.getId(), subtask);
                 return new ResponseEntity<>(createdSubtask, HttpStatus.CREATED);
             } else {
                 return ResponseEntity.notFound().build();
