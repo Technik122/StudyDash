@@ -25,20 +25,20 @@ public class UserService {
 
     public UserDto login(CredentialsDto credentialsDto) {
         User user = userRepository.findByUsername(credentialsDto.username())
-                .orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Username konnte nicht gefunden werden", HttpStatus.NOT_FOUND));
 
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.password()),
                 user.getPassword())) {
             return userMapper.toUserDto(user);
         }
-        throw new AppException("Invalid Password", HttpStatus.BAD_REQUEST);
+        throw new AppException("Falsches Passwort", HttpStatus.BAD_REQUEST);
     }
 
     public UserDto register(SignUpDto signUpDto) {
         Optional<User> oUser = userRepository.findByUsername(signUpDto.username());
 
         if (oUser.isPresent()) {
-            throw new AppException("Username already exists", HttpStatus.BAD_REQUEST);
+            throw new AppException("Username existiert bereits", HttpStatus.BAD_REQUEST);
         }
 
         User user = userMapper.signUpToUser(signUpDto);
