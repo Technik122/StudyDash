@@ -20,6 +20,8 @@ public class Course {
 
     private String name;
 
+    private int semester;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

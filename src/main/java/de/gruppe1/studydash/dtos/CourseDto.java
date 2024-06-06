@@ -15,6 +15,7 @@ import java.util.UUID;
 public class CourseDto {
     private UUID id;
     private String name;
+    private int semester;
     private UserDto user;
     private String exam;
     private Date examDate;
