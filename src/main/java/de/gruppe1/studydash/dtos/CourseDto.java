@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -15,4 +16,7 @@ public class CourseDto {
     private UUID id;
     private String name;
     private UserDto user;
+    private String exam;
+    private Date examDate;
+    private Double grade;
 }

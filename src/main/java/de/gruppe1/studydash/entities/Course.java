@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Setter
@@ -22,4 +23,10 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    private String exam;
+
+    private Date examDate;
+
+    private Double grade;
 }
