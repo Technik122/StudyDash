@@ -34,6 +34,11 @@ public class CourseService {
         Course existingCourse = courseRepository.findById(uuid).orElse(null);
         if (existingCourse != null) {
             existingCourse.setName(course.getName());
+            existingCourse.setExam(course.getExam());
+            existingCourse.setExamDate(course.getExamDate());
+            existingCourse.setGrade(course.getGrade());
+            existingCourse.setSemester(course.getSemester());
+            existingCourse.setCompleted(course.isCompleted());
             Course savedCourse = courseRepository.save(existingCourse);
             return courseMapper.toCourseDto(savedCourse);
         } else {
