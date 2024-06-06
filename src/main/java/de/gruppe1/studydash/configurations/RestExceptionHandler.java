@@ -1,5 +1,6 @@
 package de.gruppe1.studydash.configurations;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import de.gruppe1.studydash.dtos.ErrorDto;
 
@@ -24,6 +25,13 @@ public class RestExceptionHandler {
    @ResponseBody
     public ResponseEntity<ErrorDto> handleTokenExpiredException(TokenExpiredException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorDto("Token has expired. Please log in again."));
+                .body(new ErrorDto("Anmeldetoken ist abgelaufen. Bitte erneut einloggen."));
+    }
+
+    @ExceptionHandler(value = { JWTVerificationException.class})
+    @ResponseBody
+    public ResponseEntity<ErrorDto> handleJWTVerificationException(JWTVerificationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorDto("Anmeldetoken ist fehlerhaft. Bitte einloggen."));
     }
 }

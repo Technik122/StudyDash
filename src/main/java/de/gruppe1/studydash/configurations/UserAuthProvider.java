@@ -52,28 +52,23 @@ public class UserAuthProvider {
     }
 
     public Authentication validateToken(String token) {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-            JWTVerifier verifier = JWT.require(algorithm).build();
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-            DecodedJWT decoded = verifier.verify(token);
+        JWTVerifier verifier = JWT.require(algorithm).build();
 
-            User userEntity = userRepository.findByUsername(decoded.getIssuer())
-                    .orElseThrow(() -> new AppException("Unknown User", HttpStatus.NOT_FOUND));
+        DecodedJWT decoded = verifier.verify(token);
+
+        User userEntity = userRepository.findByUsername(decoded.getIssuer())
+                .orElseThrow(() -> new AppException("Unknown User", HttpStatus.NOT_FOUND));
 
 
-            UserDto user = UserDto.builder()
-                    .id(userEntity.getId())
-                    .username(decoded.getIssuer())
-                    .build();
+        UserDto user = UserDto.builder()
+                .id(userEntity.getId())
+                .username(decoded.getIssuer())
+                .build();
 
-            return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
-        } catch (TokenExpiredException e) {
-            throw new AppException("Token expired", HttpStatus.UNAUTHORIZED);
-        } catch (JWTVerificationException e) {
-            throw new AppException("Token invalid", HttpStatus.UNAUTHORIZED);
-        }
+        return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }
 
     public Authentication validateTokenStrongly(String token) {
