@@ -20,6 +20,5 @@ public class ToDoDto {
     private Date deadLine;
     private UserDto user;
     private Priority priority;
-
-    //private List<SubtaskDto> subtasks;
+    private UUID course;
 }

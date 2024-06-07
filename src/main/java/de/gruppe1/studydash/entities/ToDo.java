@@ -23,13 +23,10 @@ public class ToDo {
     private boolean completed;
     private Date deadLine;
     private Priority priority;
+    private UUID course;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    /*
-    @OneToMany(mappedBy = "parentToDo", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Subtask> subtasks = new ArrayList<>(); */
 }

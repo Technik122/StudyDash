@@ -1,5 +1,6 @@
 package de.gruppe1.studydash.configurations;
 
+import de.gruppe1.studydash.exceptions.JwtAuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,19 +31,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
                 try {
-
-                    if ("POST".equals(request.getMethod())) {
-
-                        SecurityContextHolder.getContext()
-                                .setAuthentication(userAuthProvider.validateToken(authElements[1]));
-                    } else {
-                        // Wenn keine xxx-Methode, sondern PUT etc. -> strengere Validation
-                        SecurityContextHolder.getContext()
-                                .setAuthentication(userAuthProvider.validateTokenStrongly(authElements[1]));
-                    }
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(userAuthProvider.validateToken(authElements[1]));
                 } catch (RuntimeException e) {
                     SecurityContextHolder.clearContext();
-                    throw e;
+                    throw new JwtAuthException(e);
                 }
 
             }

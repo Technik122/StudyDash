@@ -40,6 +40,7 @@ public class ToDoService {
             existingToDo.setDeadLine(toDo.getDeadLine());
             existingToDo.setPriority(toDo.getPriority());
             existingToDo.setCompleted(toDo.isCompleted());
+            existingToDo.setCourse(toDo.getCourse());
             ToDo updatedToDo = toDoRepository.save(existingToDo);
             return toDoMapper.toToDoDto(updatedToDo);
         } else {
