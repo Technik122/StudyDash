@@ -39,6 +39,7 @@ public class CourseService {
             existingCourse.setGrade(course.getGrade());
             existingCourse.setSemester(course.getSemester());
             existingCourse.setCompleted(course.isCompleted());
+            existingCourse.setColor(course.getColor());
             Course savedCourse = courseRepository.save(existingCourse);
             return courseMapper.toCourseDto(savedCourse);
         } else {

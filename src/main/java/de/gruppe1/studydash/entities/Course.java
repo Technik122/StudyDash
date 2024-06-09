@@ -33,4 +33,6 @@ public class Course {
     private Double grade;
 
     private boolean completed;
+
+    private String color;
 }

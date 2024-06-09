@@ -1,5 +1,6 @@
 package de.gruppe1.studydash.configurations;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import de.gruppe1.studydash.exceptions.JwtAuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,11 +34,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 try {
                     SecurityContextHolder.getContext()
                             .setAuthentication(userAuthProvider.validateToken(authElements[1]));
-                } catch (RuntimeException e) {
-                    SecurityContextHolder.clearContext();
-                    throw new JwtAuthException(e);
+                } catch (JwtAuthException e) {
+                    if (e.getCause() instanceof TokenExpiredException) {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.getWriter().write("Anmeldetoken ist abgelaufen. Bitte erneut einloggen.");
+                        return;
+                    } else {
+                        SecurityContextHolder.clearContext();
+                        throw e;
+                    }
                 }
-
             }
         }
         filterChain.doFilter(request, response);

@@ -21,4 +21,5 @@ public class CourseDto {
     private Date examDate;
     private Double grade;
     private boolean completed;
+    private String color;
 }
