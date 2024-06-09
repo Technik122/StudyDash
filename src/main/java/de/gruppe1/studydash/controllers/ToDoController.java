@@ -135,4 +135,22 @@ public class ToDoController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/course/{courseId}")
+    public ResponseEntity<List<ToDoDto>> getToDosByCourse(@PathVariable String courseId, @RequestHeader(value = "Authorization") String header) {
+        String[] authElements = header.split(" ");
+        if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
+            Authentication auth = userAuthProvider.validateToken(authElements[1]);
+            UserDto userDto = (UserDto) auth.getPrincipal();
+            UUID courseUuid = UUID.fromString(courseId);
+            List<ToDoDto> toDos = toDoService.getToDosByCourseId(courseUuid, userDto.getId());
+            if (toDos != null) {
+                return new ResponseEntity<>(toDos, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

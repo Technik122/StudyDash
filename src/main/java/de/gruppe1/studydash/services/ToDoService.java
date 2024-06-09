@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,5 +76,15 @@ public class ToDoService {
         } else {
             return null;
         }
+    }
+
+    public List<ToDoDto> getToDosByCourseId(UUID courseId, UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new AppException("User not found", HttpStatus.NOT_FOUND
+                ));
+        List<ToDo> toDos = toDoRepository.findByCourse(courseId);
+        return toDoMapper.toToDoDtos(toDos.stream()
+                .filter(toDo -> toDo.getUser().equals(user))
+                .collect(Collectors.toList()));
     }
 }

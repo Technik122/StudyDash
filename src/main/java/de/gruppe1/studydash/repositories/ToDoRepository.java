@@ -11,4 +11,5 @@ import java.util.UUID;
 @Repository
 public interface ToDoRepository extends JpaRepository<ToDo, UUID> {
     List<ToDo> findByUser(User user);
+    List<ToDo> findByCourse(UUID courseId);
 }
