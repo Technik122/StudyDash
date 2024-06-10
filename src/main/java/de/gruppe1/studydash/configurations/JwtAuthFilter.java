@@ -34,15 +34,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 try {
                     SecurityContextHolder.getContext()
                             .setAuthentication(userAuthProvider.validateToken(authElements[1]));
-                } catch (JwtAuthException e) {
-                    if (e.getCause() instanceof TokenExpiredException) {
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.getWriter().write("Anmeldetoken ist abgelaufen. Bitte erneut einloggen.");
-                        return;
-                    } else {
-                        SecurityContextHolder.clearContext();
-                        throw e;
-                    }
+                } catch (TokenExpiredException e) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Anmeldetoken ist abgelaufen. Bitte erneut einloggen.");
+                    return;
+                } catch (RuntimeException e) {
+                    SecurityContextHolder.clearContext();
+                    throw new JwtAuthException(e);
                 }
             }
         }
