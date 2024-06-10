@@ -1,27 +1,29 @@
 # StudyDash
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.6.
+StudyDash ist ein Dashboard für Studierende, das auf Spring Boot und Maven basiert. Es bietet eine Reihe von Funktionen, die speziell auf die Bedürfnisse von Studierenden zugeschnitten sind.
+**Backend**teil der Anwendung
 
-## Development server
+## Projektinformationen
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Dieses Projekt wurde im Sommersemester 2024 an der IU Internationale Hochschule in Hamburg für das Modul Fallstudie: Software-Engineering erstellt.
 
-## Code scaffolding
+## Funktionen
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- **ToDo-Verwaltung**: Studierende können ihre Aufgaben und Verpflichtungen in einer übersichtlichen Liste verwalten.
+- **Kursverwaltung**: Studierende können ihre Kurse verwalten und haben einen Überblick über ihre aktuellen und zukünftigen Kurse.
+- **Notizenverwaltung**: Studierende können Notizen zu ihren Kursen und Aufgaben machen und diese Notizen verwalten.
+- **Notenverwaltung**: Studierende können ihre Noten eintragen und den Durchschnitt berechnen. Es gibt auch ein Anreizsystem, das Studierende dazu ermutigt, ihre Noten zu verbessern.
 
-## Build
+## Sicherheit
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+StudyDash legt großen Wert auf Sicherheit. Wir verwenden JWT-Tokens für die Authentifizierung und Verschlüsselung der Passwörter in der Datenbank, um die Daten unserer Benutzer zu schützen.
 
-## Running unit tests
+## Technologie
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+StudyDash basiert auf Spring Boot und Maven. Es handelt sich um ein Backend-Projekt, das mit jeder Frontend-Technologie verwendet werden kann, die HTTP-Anfragen senden und empfangen kann.
 
-## Running end-to-end tests
+## Installation und Verwendung
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Da es sich um ein Maven-Projekt handelt, können Sie es einfach mit dem Befehl `mvn install` bauen und dann mit `mvn spring-boot:run` ausführen.
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Bitte beachten Sie, dass Sie eine Datenbank und einen passenden JDBC-Treiber benötigen, um StudyDash auszuführen. Die Konfigurationseinstellungen können in der `application.properties` Datei angepasst werden.
