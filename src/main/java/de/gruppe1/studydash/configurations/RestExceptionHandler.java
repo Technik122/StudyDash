@@ -20,14 +20,14 @@ public class RestExceptionHandler {
 
     // TokenExpiredException, die nicht vom JwtAuthFilter abgefangen wurde
     @ExceptionHandler(value = { TokenExpiredException.class})
-    public ResponseEntity<AppException> handleTokenExpiredException(TokenExpiredException ex) {
+    public ResponseEntity<AppException> handleTokenExpiredException() {
         AppException appException = new AppException("Anmeldetoken ist abgelaufen. Bitte erneut einloggen.", HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(appException, appException.getHttpStatus());
     }
 
     // JWTVerificationException, die nicht vom JwtAuthFilter abgefangen wurde
     @ExceptionHandler(value = { JWTVerificationException.class})
-    public ResponseEntity<AppException> handleJWTVerificationException(JWTVerificationException ex) {
+    public ResponseEntity<AppException> handleJWTVerificationException() {
         AppException appException = new AppException("Anmeldetoken ist fehlerhaft. Bitte einloggen.", HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(appException, appException.getHttpStatus());
     }
