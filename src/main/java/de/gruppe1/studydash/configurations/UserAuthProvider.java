@@ -57,7 +57,7 @@ public class UserAuthProvider {
 
         // strengere Überprüfung, ob User existiert
         User userEntity = userRepository.findByUsername(decoded.getIssuer())
-                .orElseThrow(() -> new AppException("Unknown User", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Username konnte nicht gefunden werden", HttpStatus.NOT_FOUND));
 
         return new UsernamePasswordAuthenticationToken(userMapper.toUserDto(userEntity), null, Collections.emptyList());
     }
@@ -78,13 +78,13 @@ public class UserAuthProvider {
             DecodedJWT decoded = verifier.verify(expiredToken);
             if (decoded.getExpiresAt().before(new Date())) {
                 User userEntity = userRepository.findByUsername(decoded.getIssuer())
-                        .orElseThrow(() -> new AppException("Unknown User", HttpStatus.NOT_FOUND));
+                        .orElseThrow(() -> new AppException("Username konnte nicht gefunden werden", HttpStatus.NOT_FOUND));
                 return createToken(userMapper.toUserDto(userEntity));
             } else {
-                throw new AppException("Token is not expired", HttpStatus.BAD_REQUEST);
+                throw new AppException("Anmeldetoken ist abgelaufen. Bitte erneut einloggen.", HttpStatus.BAD_REQUEST);
             }
         } catch (JWTVerificationException e) {
-            throw new AppException("Invalid token", HttpStatus.UNAUTHORIZED);
+            throw new AppException("Anmeldetoken ist fehlerhaft. Bitte einloggen.", HttpStatus.UNAUTHORIZED);
         }
     }
 }
