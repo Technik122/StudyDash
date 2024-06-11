@@ -20,6 +20,7 @@ public class Event {
 
     private String name;
     private Date date;
+    private String color;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

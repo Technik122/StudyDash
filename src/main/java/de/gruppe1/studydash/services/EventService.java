@@ -34,6 +34,7 @@ public class EventService {
         if (existingEvent != null) {
             existingEvent.setName(event.getName());
             existingEvent.setDate(event.getDate());
+            existingEvent.setColor(event.getColor());
             Event savedEvent = eventRepository.save(existingEvent);
             return eventMapper.toEventDto(savedEvent);
         } else {

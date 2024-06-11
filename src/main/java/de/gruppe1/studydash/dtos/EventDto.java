@@ -17,4 +17,5 @@ public class EventDto {
     private String name;
     private Date date;
     private UserDto user;
+    private String color;
 }
