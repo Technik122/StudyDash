@@ -1,12 +1,15 @@
 package de.gruppe1.studydash.configurations;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.gruppe1.studydash.exceptions.AppException;
 import de.gruppe1.studydash.exceptions.JwtAuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +21,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final UserAuthProvider userAuthProvider;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -35,8 +39,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext()
                             .setAuthentication(userAuthProvider.validateToken(authElements[1]));
                 } catch (TokenExpiredException e) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("Anmeldetoken ist abgelaufen. Bitte erneut einloggen.");
+                    AppException appException = new AppException("Anmeldetoken ist abgelaufen. Bitte erneut einloggen.", HttpStatus.UNAUTHORIZED);
+                    response.setStatus(appException.getHttpStatus().value());
+                    response.getWriter().write(objectMapper.writeValueAsString(appException));
                     return;
                 } catch (RuntimeException e) {
                     SecurityContextHolder.clearContext();
