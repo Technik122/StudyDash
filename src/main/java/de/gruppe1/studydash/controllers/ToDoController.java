@@ -24,7 +24,7 @@ public class ToDoController {
     private final SubtaskService subtaskService;
     private final UserAuthProvider userAuthProvider;
 
-    @GetMapping("/user")
+    @GetMapping("/get")
     public ResponseEntity<List<ToDoDto>> getToDosByUser(@RequestHeader(value = "Authorization") String header) {
         String[] authElements = header.split(" ");
         if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
