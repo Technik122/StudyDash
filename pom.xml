@@ -10,7 +10,7 @@
     </parent>
     <groupId>de.gruppe1</groupId>
     <artifactId>StudyDash</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>StudyDash</name>
     <description>StudyDash</description>
     <properties>
