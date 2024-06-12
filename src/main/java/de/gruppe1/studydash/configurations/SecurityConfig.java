@@ -1,6 +1,5 @@
 package de.gruppe1.studydash.configurations;
 
-import de.gruppe1.studydash.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
