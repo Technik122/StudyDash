@@ -71,11 +71,11 @@
            <artifactId>frontend-maven-plugin</artifactId>
            <version>1.15.0</version>
        </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-starter-sql-postgresql</artifactId>
             <version>5.4.1</version>
-        </dependency> -->
+        </dependency>
     </dependencies>
 
  <build>
