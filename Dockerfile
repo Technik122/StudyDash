@@ -1,5 +1,5 @@
-# Use Maven image for the build stage
-FROM maven:3.8.4-openjdk-21 AS build
+# Use a Maven image with OpenJDK 17 for the build stage
+FROM maven:3.8.4-openjdk-17 AS build
 
 # Copy project files and set the working directory
 COPY . /home/maven/src
@@ -9,7 +9,7 @@ WORKDIR /home/maven/src
 RUN mvn clean package -DskipTests
 
 # Use a lightweight OpenJDK image for the final stage
-FROM openjdk:21-jre-slim
+FROM openjdk:17-jre-slim
 
 # Create a directory for the application
 RUN mkdir /app
