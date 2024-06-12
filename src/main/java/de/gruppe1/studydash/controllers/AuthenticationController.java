@@ -12,6 +12,7 @@ import de.gruppe1.studydash.dtos.UserDto;
 import de.gruppe1.studydash.dtos.CredentialsDto;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,6 +53,24 @@ public class AuthenticationController implements WebMvcConfigurer {
         if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
             String newToken = userAuthProvider.refreshToken(authElements[1]);
             return ResponseEntity.ok(newToken);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/user/delete/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        userService.deleteUser(UUID.fromString(id));
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/user/get")
+    public ResponseEntity<UserDto> getUser(@RequestHeader(value = "Authorization") String header) {
+        String[] authElements = header.split(" ");
+        if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
+            String username = userAuthProvider.getUsernameFromToken(authElements[1]);
+            UserDto user = userService.getUserByUsername(username);
+            return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.badRequest().build();
         }

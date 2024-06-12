@@ -87,4 +87,15 @@ public class UserAuthProvider {
             throw new AppException("Anmeldetoken ist fehlerhaft. Bitte einloggen.", HttpStatus.UNAUTHORIZED);
         }
     }
+
+    public String getUsernameFromToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            DecodedJWT jwt = verifier.verify(token);
+            return jwt.getIssuer();
+        } catch (JWTVerificationException exception) {
+            throw new AppException("Anmeldetoken ist fehlerhaft. Bitte erneut einloggen.", HttpStatus.UNAUTHORIZED);
+        }
+    }
 }

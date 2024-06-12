@@ -11,4 +11,5 @@ import java.util.UUID;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, UUID> {
     List<Course> findByUser(User user);
+    void deleteByUserId(UUID userId);
 }

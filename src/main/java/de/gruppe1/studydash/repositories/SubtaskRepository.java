@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface SubtaskRepository extends JpaRepository<Subtask, UUID> {
     List<Subtask> findByParentToDoId(UUID parentToDoId);
+    void deleteByUserId(UUID userId);
 }
