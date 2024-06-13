@@ -19,8 +19,6 @@ public interface SubtaskMapper {
 
     List<SubtaskDto> toSubtaskDtos(List<Subtask> subtasks);
 
-    //List<Subtask> dtoToSubtasks(List<SubtaskDto> subtaskDtos, @Context ToDoRepository toDoRepository);
-
     default UUID map(ToDo value) {
         return value.getId();
     }
